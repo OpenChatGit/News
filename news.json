@@ -1,0 +1,33 @@
+{
+  "version": 1,
+  "updatedAt": "2026-06-18",
+  "sections": [
+    {
+      "id": "highlights",
+      "layout": "row",
+      "items": [
+        {
+          "id": "news-experiment",
+          "kind": "info",
+          "title": "News feature (test)",
+          "description": "This news section is only an experiment. It will probably be removed again in a future update.",
+          "background": {
+            "src": "https://raw.githubusercontent.com/OpenChatGit/News/main/news-assets/planned.svg",
+            "scrim": 0.58
+          }
+        },
+        {
+          "id": "github-feed-test",
+          "kind": "update",
+          "title": "GitHub test feed",
+          "description": "Updates are loaded from an external repository while we test this feature — not a permanent part of OpenChat yet.",
+          "url": "https://github.com/OpenChatGit/News",
+          "background": {
+            "src": "https://raw.githubusercontent.com/OpenChatGit/News/main/news-assets/update.svg",
+            "scrim": 0.58
+          }
+        }
+      ]
+    }
+  ]
+}
