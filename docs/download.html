@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>OpenChat</title>
+    <title>Download · OpenChat</title>
     <link rel="stylesheet" href="assets/site.css" />
   </head>
   <body>
@@ -17,8 +17,8 @@
         </a>
 
         <nav class="topbar__actions" aria-label="Site">
-          <a class="topbar__link topbar__link--active" href="index.html">News</a>
-          <a class="topbar__link" href="download.html">Download</a>
+          <a class="topbar__link" href="index.html">News</a>
+          <a class="topbar__link topbar__link--active" href="download.html">Download</a>
           <a
             class="topbar__icon-btn"
             href="https://github.com/OpenChatGit/News"
@@ -37,17 +37,41 @@
         </nav>
       </header>
 
-      <div class="page-body">
-        <main class="main-view" aria-label="Article">
-          <nav class="news-nav" id="news-nav" aria-label="News list"></nav>
-          <div class="news-content">
-            <article class="news-article" id="news-article" aria-live="polite"></article>
+      <main class="page-body download-page" aria-label="Download">
+        <section class="download-hero" aria-hidden="true">
+          <div class="download-hero__base"></div>
+          <div class="download-hero__field">
+            <div class="download-hero__track"></div>
           </div>
-        </main>
-      </div>
-    </div>
+          <div class="download-hero__fade"></div>
+        </section>
 
+        <div class="download-panel">
+          <h1 class="download-title">Download the App</h1>
+          <div class="download-actions" aria-label="Download options">
+            <button type="button" class="btn btn--primary" disabled>Windows</button>
+            <button type="button" class="btn btn--ghost" disabled>All releases</button>
+          </div>
+        </div>
+
+        <div class="download-page__main">
+          <div class="download-content">
+            <article class="download-prose prose" id="download-content" aria-live="polite"></article>
+          </div>
+        </div>
+      </main>
+    </div>
     <script src="https://cdn.jsdelivr.net/npm/marked@12.0.2/marked.min.js"></script>
-    <script src="assets/site.js"></script>
+    <script src="assets/download.js"></script>
+    <script>
+      (function () {
+        const track = document.querySelector(".download-hero__track");
+        if (!track) return;
+
+        document.addEventListener("visibilitychange", () => {
+          track.style.animationPlayState = document.hidden ? "paused" : "running";
+        });
+      })();
+    </script>
   </body>
 </html>

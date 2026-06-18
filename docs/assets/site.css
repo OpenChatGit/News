@@ -52,9 +52,8 @@ a {
   justify-content: space-between;
   gap: 1rem;
   border-bottom: 1px solid var(--border);
-  background: color-mix(in srgb, var(--bg) 88%, transparent);
+  background: var(--bg);
   padding: 0 1.25rem;
-  backdrop-filter: blur(12px);
 }
 
 .topbar__icon-btn {
@@ -178,6 +177,185 @@ a {
   background: var(--bg-main);
 }
 
+.download-page {
+  --download-hero-height: clamp(13rem, 36vh, 22rem);
+  position: relative;
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: flex-start;
+  padding: 0;
+  overflow: hidden;
+}
+
+.download-hero {
+  --hero-tile-size: max(9rem, 28vw, 11vh);
+  --hero-duration: 28s;
+  position: relative;
+  flex-shrink: 0;
+  width: 100%;
+  height: var(--download-hero-height);
+  overflow: hidden;
+  contain: paint;
+}
+
+.download-hero__base {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, #171717 0%, #212021 58%, #1b1b1b 100%);
+}
+
+.download-hero__field {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.download-hero__track {
+  position: absolute;
+  left: calc(var(--hero-tile-size) * -1);
+  top: calc(var(--hero-tile-size) * -1);
+  width: calc(100% + var(--hero-tile-size) * 2);
+  height: calc(100% + var(--hero-tile-size) * 2);
+  background-image: url("download-hero-pattern.svg");
+  background-repeat: repeat;
+  background-size: var(--hero-tile-size) var(--hero-tile-size);
+  transform: translate3d(0, 0, 0);
+  animation: download-hero-drift var(--hero-duration) linear infinite;
+  will-change: transform;
+  backface-visibility: hidden;
+}
+
+.download-hero__fade {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(to bottom, transparent 45%, color-mix(in srgb, var(--bg-main) 55%, transparent) 100%);
+}
+
+@keyframes download-hero-drift {
+  from {
+    transform: translate3d(0, 0, 0);
+  }
+
+  to {
+    transform: translate3d(calc(var(--hero-tile-size) * -1), var(--hero-tile-size), 0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .download-hero__track {
+    animation: none;
+  }
+}
+
+@media (max-width: 767px) {
+  .download-hero {
+    --hero-tile-size: max(7.5rem, 36vw, 13vh);
+    --hero-duration: 24s;
+  }
+}
+
+.download-panel {
+  position: absolute;
+  top: calc(var(--download-hero-height) * 0.5);
+  left: 50%;
+  z-index: 2;
+  width: min(42rem, calc(100% - 3rem));
+  transform: translate(-50%, -50%);
+  text-align: center;
+}
+
+.download-title {
+  margin: 0 0 1.25rem;
+  font-size: 1.25rem;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  color: var(--text);
+}
+
+.download-page__main {
+  flex: 1;
+  min-height: 10rem;
+  background: var(--bg-main);
+  padding: 2.5rem 1.5rem 4rem;
+}
+
+.download-content {
+  max-width: 44rem;
+  margin: 0 auto;
+}
+
+.download-prose h2:first-child {
+  margin-top: 0;
+}
+
+.download-actions {
+  display: flex;
+  justify-content: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 10rem;
+  height: 2.75rem;
+  padding: 0 1rem;
+  border-radius: 0.75rem;
+  font: inherit;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  transition: transform 0.12s ease, background-color 0.15s ease, color 0.15s ease,
+    border-color 0.15s ease, opacity 0.15s ease;
+  user-select: none;
+}
+
+.btn:disabled {
+  opacity: 0.42;
+  cursor: not-allowed;
+}
+
+.btn:not(:disabled):active {
+  transform: translateY(1px);
+}
+
+.btn--primary {
+  background: color-mix(in srgb, var(--accent) 22%, transparent);
+  color: var(--text);
+  border: 1px solid color-mix(in srgb, var(--accent) 35%, var(--border));
+}
+
+.btn--primary:hover {
+  background: color-mix(in srgb, var(--accent) 28%, transparent);
+}
+
+.btn--ghost {
+  background: transparent;
+  color: var(--text);
+  border: 1px solid var(--border);
+}
+
+.btn--ghost:hover {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.btn--primary:disabled,
+.btn--ghost:disabled {
+  opacity: 0.42;
+  cursor: not-allowed;
+  color: var(--text-muted);
+  background: rgba(255, 255, 255, 0.04);
+  border-color: var(--border);
+}
+
+.btn:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+}
+
 .main-view {
   display: flex;
   flex: 1;
@@ -201,7 +379,6 @@ a {
   position: sticky;
   top: calc(var(--topbar-height) + 1rem);
   z-index: 2;
-  backdrop-filter: blur(14px);
 }
 
 .news-nav__btn {
@@ -241,24 +418,23 @@ a {
 }
 
 .news-content {
+  display: flex;
   flex: 1;
+  flex-direction: column;
+  align-items: center;
   min-width: 0;
   padding: 1.75rem 1.5rem 4rem;
 }
 
 .news-article {
+  width: 100%;
   max-width: 44rem;
 }
 
 .news-empty {
-  margin: 0;
-  color: var(--text-muted);
-}
-
-.news-feed-updated {
+  width: 100%;
   max-width: 44rem;
-  margin: 2rem 0 0;
-  font-size: 0.8125rem;
+  margin: 0;
   color: var(--text-muted);
 }
 
@@ -282,6 +458,20 @@ a {
   font-size: 1.75rem;
   font-weight: 600;
   line-height: 1.25;
+}
+
+.article-meta {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  gap: 0.625rem;
+}
+
+.article-date {
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: var(--text-muted);
+  white-space: nowrap;
 }
 
 .badge {
@@ -386,6 +576,44 @@ a {
   color: var(--text-muted);
 }
 
+.prose strong {
+  font-weight: 600;
+  color: var(--text);
+}
+
+.prose hr {
+  margin: 1.5rem 0;
+  border: 0;
+  border-top: 1px solid var(--border);
+}
+
+.prose table {
+  width: 100%;
+  margin: 0 0 1rem;
+  border-collapse: collapse;
+  font-size: 0.9375rem;
+}
+
+.prose th,
+.prose td {
+  padding: 0.5rem 0.75rem;
+  border: 1px solid var(--border);
+  text-align: left;
+}
+
+.prose th {
+  font-weight: 600;
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.prose img {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  margin: 0 0 1rem;
+  border-radius: 0.5rem;
+}
+
 .prose a {
   color: var(--accent);
   text-decoration: underline;
@@ -417,6 +645,10 @@ a {
 @media (max-width: 767px) {
   .main-view {
     flex-direction: column;
+  }
+
+  .btn {
+    min-width: 9rem;
   }
 
   .news-nav {

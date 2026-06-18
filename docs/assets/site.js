@@ -13,14 +13,14 @@
 
   const navEl = document.getElementById("news-nav");
   const articleEl = document.getElementById("news-article");
-  const feedUpdatedEl = document.getElementById("news-feed-updated");
 
   if (!navEl || !articleEl) return;
+
+  configureMarkdownParser();
 
   /** @type {Array<{ id: string; kind: string; title: string; description?: string }>} */
   let items = [];
   let activeId = null;
-  let feedUpdatedAt = "";
 
   init().catch((error) => {
     console.error(error);
@@ -35,15 +35,18 @@
     }
   });
 
+  function configureMarkdownParser() {
+    if (typeof marked === "undefined") return;
+
+    marked.setOptions({
+      gfm: true,
+      breaks: false,
+    });
+  }
+
   async function init() {
     const feed = await fetchNewsFeed();
     items = flattenItems(feed);
-    feedUpdatedAt = feed.updatedAt || "";
-
-    if (feedUpdatedEl && feedUpdatedAt) {
-      feedUpdatedEl.textContent = `Feed updated ${feedUpdatedAt}`;
-      feedUpdatedEl.hidden = false;
-    }
 
     if (items.length === 0) {
       navEl.innerHTML = "";
@@ -118,26 +121,66 @@
     articleEl.innerHTML = '<p class="news-empty">Loading…</p>';
 
     const markdown = await fetchMarkdown(item.id);
-    const bodyHtml =
-      typeof marked !== "undefined"
-        ? marked.parse(markdown, { gfm: true, breaks: false })
-        : `<pre>${escapeHtml(markdown)}</pre>`;
+    const bodyHtml = renderMarkdown(markdown, item.title);
 
     const kind = item.kind || "info";
     const kindLabel = KIND_LABELS[kind] || "Info";
     const lead = item.description
       ? `<p class="lead">${escapeHtml(item.description)}</p>`
       : "";
+    const createdAt = formatCreatedAt(item.createdAt);
+    const dateMarkup = createdAt
+      ? `<time class="article-date" datetime="${escapeHtml(item.createdAt)}">${createdAt}</time>`
+      : "";
 
     articleEl.innerHTML = `
       <header class="article-header">
         <h1>${escapeHtml(item.title)}</h1>
-        <span class="badge badge--${escapeHtml(kind)}">${escapeHtml(kindLabel)}</span>
+        <div class="article-meta">
+          <span class="badge badge--${escapeHtml(kind)}">${escapeHtml(kindLabel)}</span>
+          ${dateMarkup}
+        </div>
       </header>
       ${lead}
       <div class="prose">${bodyHtml}</div>
-      ${feedUpdatedAt ? `<p class="meta">Updated ${escapeHtml(feedUpdatedAt)}</p>` : ""}
     `;
+  }
+
+  function renderMarkdown(markdown, title) {
+    const normalized = stripDuplicateTitle(markdown, title);
+
+    if (typeof marked === "undefined") {
+      return `<pre>${escapeHtml(normalized)}</pre>`;
+    }
+
+    return enhanceProseHtml(marked.parse(normalized));
+  }
+
+  function enhanceProseHtml(html) {
+    const doc = new DOMParser().parseFromString(html, "text/html");
+
+    for (const anchor of doc.body.querySelectorAll("a")) {
+      const href = anchor.getAttribute("href") || "";
+      if (/^https?:\/\//i.test(href)) {
+        anchor.setAttribute("target", "_blank");
+        anchor.setAttribute("rel", "noopener noreferrer");
+      }
+    }
+
+    return doc.body.innerHTML;
+  }
+
+  function stripDuplicateTitle(markdown, title) {
+    const trimmed = markdown.replace(/^\uFEFF/, "").trim();
+    const lines = trimmed.split("\n");
+    const first = lines[0] || "";
+
+    const h1Match = first.match(/^#\s+(.+)$/);
+    if (h1Match && h1Match[1].trim() === title.trim()) {
+      return lines.slice(1).join("\n").trimStart();
+    }
+
+    return trimmed;
   }
 
   async function fetchMarkdown(id) {
@@ -155,5 +198,18 @@
       .replaceAll(">", "&gt;")
       .replaceAll('"', "&quot;")
       .replaceAll("'", "&#39;");
+  }
+
+  function formatCreatedAt(value) {
+    if (!value) return "";
+
+    const date = new Date(value);
+    if (Number.isNaN(date.getTime())) return escapeHtml(value);
+
+    return new Intl.DateTimeFormat("en-GB", {
+      day: "numeric",
+      month: "short",
+      year: "numeric",
+    }).format(date);
   }
 })();
