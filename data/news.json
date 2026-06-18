@@ -11,8 +11,9 @@
           "kind": "info",
           "title": "News feature (test)",
           "description": "This news section is only an experiment. It will probably be removed again in a future update.",
+          "url": "https://openchatgit.github.io/News/#news-experiment",
           "background": {
-            "src": "https://wallpaperaccess.com/full/670445.jpg",
+            "src": "https://raw.githubusercontent.com/OpenChatGit/News/main/news-assets/planned.svg",
             "scrim": 0.58
           }
         },
@@ -21,9 +22,9 @@
           "kind": "update",
           "title": "GitHub test feed",
           "description": "Updates are loaded from an external repository while we test this feature — not a permanent part of OpenChat yet.",
-          "url": "https://github.com/OpenChatGit/News",
+          "url": "https://openchatgit.github.io/News/#github-feed-test",
           "background": {
-            "src": "https://wallpaperaccess.com/full/670445.jpg",
+            "src": "https://raw.githubusercontent.com/OpenChatGit/News/main/news-assets/update.svg",
             "scrim": 0.58
           }
         }
