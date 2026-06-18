@@ -12,7 +12,7 @@
           "title": "News feature (test)",
           "description": "This news section is only an experiment. It will probably be removed again in a future update.",
           "background": {
-            "src": "https://raw.githubusercontent.com/OpenChatGit/News/main/news-assets/planned.svg",
+            "src": "https://wallpaperaccess.com/full/670445.jpg",
             "scrim": 0.58
           }
         },
@@ -23,7 +23,7 @@
           "description": "Updates are loaded from an external repository while we test this feature — not a permanent part of OpenChat yet.",
           "url": "https://github.com/OpenChatGit/News",
           "background": {
-            "src": "https://raw.githubusercontent.com/OpenChatGit/News/main/news-assets/update.svg",
+            "src": "https://wallpaperaccess.com/full/670445.jpg",
             "scrim": 0.58
           }
         }
